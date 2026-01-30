@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+body{
+  width: 100%;
+  background-color: #001b35;
+  font-family: Alegreya Sans,sans-serif;
+  font-size: 120%;
+}
