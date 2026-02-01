@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import TierList from "./pages/TierList";
 import SecretPacks from "./pages/SecretPacks";
 import TopCards from "./pages/TopCards";
-import NavBar from "./components/navbar";
+import NavBar from "./components/NavBar";
 
 
 export default function App() {
