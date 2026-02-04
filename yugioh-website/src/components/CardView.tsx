@@ -105,7 +105,7 @@ interface CardViewProps {
 
 export default function CardView({ card }: CardViewProps) {
   return (
-    <div className="card-view-container my-4 mx-10 color-inherit">
+    <div className="card-view-container my-4 color-inherit">
       {/* Container: Stacked on mobile, side-by-side on md+ */}
       <div className="background-thing flex flex-col md:flex-row rounded-lg overflow-hidden border border-gray-800 shadow-2xl ">
         

@@ -10,7 +10,7 @@ export default function App() {
   return (
     <div>
       <NavBar />
-      <main className='main-content'>
+      <main className='main-content max-w-1080'>
         <Routes>
           <Route path="/" element={<Home/>} />
           <Route path="/tier-list" element={<TierList/>} />
