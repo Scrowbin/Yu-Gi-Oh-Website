@@ -1,6 +1,6 @@
 import type { MainDeckMonster } from "../types/card";
 import CardView from "../components/CardView";
-
+import CardImage from "../components/CardImage";
 export default function Home(){
     const blueEyes: MainDeckMonster = {
         id: "0001",
@@ -21,7 +21,7 @@ export default function Home(){
     };
 
     return (
-        <div>
+        <div className="w-full flex flex-col items-center justify-center">
             {/* Pass the 'blueEyes' variable to the 'card' prop */}
             <CardView card={blueEyes} />
         </div>

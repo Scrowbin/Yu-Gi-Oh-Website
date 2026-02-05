@@ -1,5 +1,5 @@
 import type { Card } from "../types/card";
-import {isOnBanList } from "../types/card"; 
+import CardImage from "./CardImage";
 
 interface DeckViewProps {
   cards: Card[];
@@ -8,11 +8,7 @@ interface DeckViewProps {
 export default function DeckView({ cards }: DeckViewProps) {
   return (
     <div className="w-full ">
-      {cards.map(card => (
-        <div key={card.id}>
-          {card.name}
-        </div>
-      ))}
+      {cards.map(card => <CardImage card={card}/>)}
     </div>
   );
 }

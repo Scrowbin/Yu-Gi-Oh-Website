@@ -10,7 +10,7 @@ export default function App() {
   return (
     <div>
       <NavBar />
-      <main className='main-content max-w-1080'>
+      <main className='main-content flex items-center max-w-[1080px] mx-auto px-[12px]'>
         <Routes>
           <Route path="/" element={<Home/>} />
           <Route path="/tier-list" element={<TierList/>} />
