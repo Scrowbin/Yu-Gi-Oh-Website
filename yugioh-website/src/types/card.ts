@@ -40,7 +40,7 @@ export type MonsterAttribute =
     | "WIND"
     | "DIVINE";
 
-export type MonsterType = 
+export type MonsterRace = 
     | "Spellcaster"
     | "Dragon"
     | "Zombie"
@@ -131,7 +131,7 @@ export interface MonsterBase extends BaseCard {
 
     attribute: MonsterAttribute;
 
-    monsterType: MonsterType;
+    monsterRace: MonsterRace;
     monsterCardType: MonsterCardType[];
     atk: number|"?";
 }
@@ -216,3 +216,23 @@ export type Card =
     | MonsterCard
     | SpellCard
     | TrapCard;
+
+
+// example 
+// const blueEyes: MainDeckMonster = {
+//     id: "0001",
+//     name: "Blue-Eyes White Dragon",
+//     effect: "This legendary dragon is a powerful engine of destruction.",
+//     status: "unlimited",
+//     cardFrame: "Normal",
+//     cardType: "monster",
+//     rarity: "Ultra Rare (UR)",
+
+//     attribute: "LIGHT",
+//     monsterType: "Dragon",
+//     monsterCardType: ["Normal", "Main Deck"],
+
+//     atk: 3000,
+//     def: 2500,
+//     level: 8,
+// };

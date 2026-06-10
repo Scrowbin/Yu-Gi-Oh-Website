@@ -1,0 +1,41 @@
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Card {
+  id          Int     @id
+  name        String  @unique
+  description String
+  type        String
+  race        String
+  attribute   String?
+  archetype   String?
+  atk         Int?
+  def         Int?
+  level       Int?
+  imageUrl    String
+
+  deckCards   DeckCard[]
+}
+
+model Deck {
+  id     Int        @id @default(autoincrement())
+  userId Int
+  cards  DeckCard[]
+}
+
+model DeckCard {
+  id     Int  @id @default(autoincrement())
+  deck   Deck @relation(fields: [deckId], references: [id])
+  deckId Int
+  card   Card @relation(fields: [cardId], references: [id])
+  cardId Int
+
+  @@unique([deckId, cardId])
+}

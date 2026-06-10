@@ -106,7 +106,7 @@ export default function CardView({ card }: CardViewProps) {
           {/* Monster Type */}
           {card.cardType === "monster" && (
             <div className="text-sm font-bold text-gray-300">
-              [ {card.monsterType} / {card.monsterCardType.join(" / ")} ]
+              [ {card.monsterRace} / {card.monsterCardType.join(" / ")} ]
             </div>
           )}
 
