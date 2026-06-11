@@ -13,6 +13,8 @@ export type CardType =
     | "spell"
     | "trap";
 
+export type TypeLine = [MonsterRace, ...MonsterCardType[]];
+
 export type CardCategory =
     | "Hand-trap"
     | "Floodgate"
@@ -24,8 +26,18 @@ export type Rarity =
     | "Ultra Rare (UR)"    
 
 export type CardFrame =
-    | "Overframe"
+    | "Effect"
+    | "Effect Pendulum"
+    | "Fusion"
+    | "Fusion Pendulum"
+    | "Link"
     | "Normal"
+    | "Ritual"
+    | "Spell"
+    | "Synchro"
+    | "Trap"
+    | "Xyz"
+    | "Xyz Pendulum"
 
 /* =========================
    Monster related literals
@@ -82,11 +94,13 @@ export type MonsterCardType =
     | "Pendulum"
     | "Link"
     | "Tuner"
-    | "Main Deck"
-    | "Special Summon"
-    | "Extra Deck"
-    | "Non-Effect"
-    | "Generic Materials"
+
+    // i dont know if i should seperate these into their own seperate tag for meta filtering
+    // | "Main Deck"
+    // | "Special Summon"
+    // | "Extra Deck"
+    // | "Non-Effect"
+    // | "Generic Materials"
 
 export type LinkArrows =
     | "Top-Left" 
@@ -159,6 +173,10 @@ export type MonsterCard =
     | MainDeckMonster | FusionMonster | SynchroMonster | XyzMonster | LinkMonster 
     | PendulumMain | PendulumFusion | PendulumSynchro | PendulumXyz;
 
+export type ExtraDeckMonster =
+    | FusionMonster    | SynchroMonster    | XyzMonster    | LinkMonster
+    | PendulumFusion    | PendulumSynchro    | PendulumXyz;
+
 /* ======================================================
    Monster type guards 
    ====================================================== */    
@@ -168,20 +186,26 @@ export const isLink = (card: MonsterCard): card is LinkMonster =>
 export const isXyz = (card: MonsterCard): card is XyzMonster => 
     card.monsterCardType.includes("Xyz");
 
+export const isFusion = (card: MonsterCard): card is FusionMonster | PendulumFusion =>
+    card.monsterCardType.includes("Fusion")
+
 export const isPendulum = (card: MonsterCard): card is (MonsterCard & IsPendulum) => 
     card.monsterCardType.includes("Pendulum");
 
-export const isSynchro = (card: MonsterCard): card is (MonsterCard & HasLevel) =>
+export const isSynchro = (card: MonsterCard): card is (SynchroMonster | PendulumSynchro) =>
     card.monsterCardType.includes("Synchro");
 
 export const hasLevel = (card: MonsterCard): card is (MonsterCard & HasLevel) =>
     'level' in card;
 
-export const isMainDeck = (card: MonsterCard): card is (MonsterCard & HasLevel) =>
-    card.monsterCardType.includes("Main Deck");
+// export const isMainDeck = (card: MonsterCard): card is (MonsterCard & HasLevel) =>
+//     card.monsterCardType.includes("Main Deck");
 
-export const isExtraDeck = (card: MonsterCard): card is (MonsterCard & ExtraDeckBase) =>
-    card.monsterCardType.includes("Extra Deck");
+export const isExtraDeck = (card: MonsterCard): card is ExtraDeckMonster =>
+    isFusion(card) ||
+    isSynchro(card) ||
+    isXyz(card) ||
+    isLink(card);
 
 export const isOnBanList = (card: Card) => card.status !== "unlimited" && !!card.status;
 
@@ -196,7 +220,8 @@ export interface SpellCard extends BaseCard {
         | "continuous"
         | "quick-play"
         | "field"
-        | "ritual";
+        | "ritual"
+        | "equip";
 }
 
 

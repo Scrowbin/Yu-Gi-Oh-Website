@@ -14,8 +14,9 @@ dist-ssr
 
 # Editor directories and files
 .vscode/*
-.card/*
-.card_images/*
+cards/*
+card_images/*
+*.env
 
 !.vscode/extensions.json
 .idea

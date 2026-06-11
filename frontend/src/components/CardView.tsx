@@ -1,5 +1,5 @@
 import type { Card } from "../types/card";
-import { isXyz, isLink, isPendulum, hasLevel, isExtraDeck, isOnBanList } from "../types/card"; // Import your guards
+import { isXyz, isLink,isExtraDeck, isPendulum, hasLevel, isOnBanList } from "../types/card"; // Import your guards
 import CardImage from "./CardImage";
 
 interface CardViewProps {

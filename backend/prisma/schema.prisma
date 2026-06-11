@@ -7,23 +7,103 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-
 }
 
+// Konami id (same as YGOPRODeck). monsterRace + monsterCardType reconstruct TypeLine.
 model Card {
-  id          Int     @id
-  name        String  @unique
-  description String
-  type        String
-  race        String
-  attribute   String?
-  archetype   String?
-  atk         Int?
-  def         Int?
-  level       Int?
-  imageUrl    String
+  id              Int     @id
+  name            String  @unique
+  effect          String  @db.Text
+  cardFrame       String // YGO frameType snake_case: effect_pendulum, xyz, spell, etc.
+  cardType        String // monster | spell | trap
 
-  deckCards   DeckCard[]
+  attribute       String?
+  monsterRace     String? // typeline[0], as YGO provides (e.g. Beast-Warrior)
+  monsterCardType String[] // typeline[1..] lowercase: effect, pendulum, fusion, xyz, ...
+  atk             String? // numeric string or "?"
+  def             String?
+
+  level           Int?
+  rank            Int? // XYZ rank (YGOPRODeck stores this in level)
+  material        String? @db.Text
+
+  pendScale       Int?
+  pendEffect      String? @db.Text
+
+  linkNumber      Int?
+  linkArrows      String[]
+
+  spellType       String? // normal | continuous | quick-play | field | ritual
+  trapType        String? // normal | continuous | counter
+
+  archetype       String?
+  imageUrl        String
+  ygoprodeckUrl   String?
+
+  banlistEntries BanlistEntry[]
+  categories     CardCategory[]
+  masterDuel     MasterDuelCard?
+  deckCards      DeckCard[]
+}
+
+// One row per format (TCG, OCG, GOAT, Master Duel, etc.)
+model Banlist {
+  id        Int               @id @default(autoincrement())
+  slug      String            @unique // tcg, ocg, goat, master-duel
+  name      String
+  snapshots BanlistSnapshot[]
+}
+
+// A point-in-time banlist. Frontend uses MAX(effectiveDate) per banlist for the current list.
+model BanlistSnapshot {
+  id            Int      @id @default(autoincrement())
+  banlistId     Int
+  effectiveDate DateTime @db.Date
+
+  banlist Banlist        @relation(fields: [banlistId], references: [id], onDelete: Cascade)
+  entries BanlistEntry[]
+
+  @@unique([banlistId, effectiveDate])
+  @@index([banlistId, effectiveDate])
+}
+
+model BanlistEntry {
+  id         Int    @id @default(autoincrement())
+  snapshotId Int
+  cardId     Int
+  status     String // forbidden | limited | semi-limited
+
+  snapshot BanlistSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  card     Card            @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([snapshotId, cardId])
+  @@index([cardId])
+}
+
+// Meta tags (Hand-trap, Floodgate, etc.) — curated, not from YGOPRODeck
+model Category {
+  id    Int            @id @default(autoincrement())
+  slug  String         @unique // hand-trap, floodgate
+  name  String
+  cards CardCategory[]
+}
+
+model CardCategory {
+  cardId     Int
+  categoryId Int
+
+  card     Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([cardId, categoryId])
+}
+
+// Master Duel–specific data (rarity is not a property of the physical card)
+model MasterDuelCard {
+  cardId Int    @id
+  rarity String // lowercase slug: normal-n, rare, super-rare, ultra-rare
+
+  card Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
 }
 
 model Deck {
@@ -34,10 +114,11 @@ model Deck {
 
 model DeckCard {
   id     Int  @id @default(autoincrement())
-  deck   Deck @relation(fields: [deckId], references: [id])
   deckId Int
-  card   Card @relation(fields: [cardId], references: [id])
   cardId Int
+
+  deck Deck @relation(fields: [deckId], references: [id])
+  card Card @relation(fields: [cardId], references: [id])
 
   @@unique([deckId, cardId])
 }
