@@ -42,7 +42,10 @@ export default function Navbar() {
 
         {/* Desktop links */}
         <div className="hidden md:flex gap-6 text-xl text-[#dedede] text-base font-medium">
-          <Link to="/decks">Decks</Link>
+          <Link to="/tier-list">Tier List</Link>
+          <Link to="/top-decks">Top Decks</Link>
+          <Link to="/secret-packs">Secret Packs</Link>
+          <Link to="/top-cards">Top Cards</Link>
           <Link to="/about">About</Link>
         </div>
 

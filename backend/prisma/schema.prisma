@@ -37,7 +37,9 @@ model Card {
   trapType        String? // normal | continuous | counter
 
   archetype       String?
-  imageUrl        String
+  imageFull       String? // /card_images/full/{name}_{id}.jpg (no _full suffix)
+  imageCropped    String? // /card_images/cropped/{name}_{id}_cropped.jpg
+  imageSmall      String? // /card_images/small/{name}_{id}_small.jpg
   ygoprodeckUrl   String?
 
   banlistEntries BanlistEntry[]

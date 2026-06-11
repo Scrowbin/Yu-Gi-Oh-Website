@@ -48,6 +48,13 @@ export type MonsterCardType =
     | "Link"
     | "Tuner";
 
+/** Paths served by express.static at /card_images — use directly with fetch(). */
+export interface CardImages {
+    full?: string;
+    cropped?: string;
+    small?: string;
+}
+
 export interface ApiBaseCard {
     id: string;
     name: string;
@@ -55,6 +62,7 @@ export interface ApiBaseCard {
     status: CardStatus;
     cardFrame: CardFrame;
     cardType: CardType;
+    images: CardImages;
     cardCategory?: CardCategory[];
     rarity?: Rarity;
 }

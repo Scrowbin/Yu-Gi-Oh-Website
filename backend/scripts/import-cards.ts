@@ -14,6 +14,8 @@ import {
   statToDb,
   trapTypeToDb,
 } from "../src/lib/normalizeYgo.js";
+import { resolveCardImageUrls } from "../src/lib/cardImages.js";
+import { decodeHtmlEntities } from "../src/lib/htmlEntities.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CARDS_DIR = path.resolve(__dirname, "../cards");
@@ -71,21 +73,18 @@ function parseMonsterEffect(ygo: YgoCardJson): string {
   return ygo.monster_desc ?? ygo.desc;
 }
 
-function toCardCreateInput(ygo: YgoCardJson) {
+async function toCardCreateInput(ygo: YgoCardJson) {
   const cardType = cardKindToDb(ygo.type);
   const { monsterRace, monsterCardType } = parseTypeline(ygo);
   const { level, rank } = parseLevelAndRankDb(monsterCardType, ygo.level);
   const isPendulum = monsterCardType.includes("pendulum");
   const isLink = monsterCardType.includes("link");
-
-  const imageUrl = ygo.card_images?.[0]?.image_url;
-  if (!imageUrl) {
-    throw new Error(`Missing image for card ${ygo.id} (${ygo.name})`);
-  }
+  const name = decodeHtmlEntities(ygo.name);
+  const images = await resolveCardImageUrls(name, ygo.id);
 
   return {
     id: ygo.id,
-    name: ygo.name,
+    name,
     effect: parseMonsterEffect(ygo),
     cardFrame: frameTypeToDb(ygo.frameType),
     cardType,
@@ -104,7 +103,9 @@ function toCardCreateInput(ygo: YgoCardJson) {
     spellType: cardType === "spell" ? spellTypeToDb(ygo.race) : null,
     trapType: cardType === "trap" ? trapTypeToDb(ygo.race) : null,
     archetype: ygo.archetype ?? null,
-    imageUrl,
+    imageFull: images.full ?? null,
+    imageCropped: images.cropped ?? null,
+    imageSmall: images.small ?? null,
     ygoprodeckUrl: ygo.ygoprodeck_url ?? null,
   };
 }
@@ -182,7 +183,7 @@ async function main() {
 
   let imported = 0;
   for (const ygo of ygoCards) {
-    const data = toCardCreateInput(ygo);
+    const data = await toCardCreateInput(ygo);
     await prisma.card.upsert({
       where: { id: ygo.id },
       create: data,

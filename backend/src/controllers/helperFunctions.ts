@@ -22,12 +22,3 @@ export function parseRouteParam(raw: unknown, label: string): string {
     return raw;
 }
 
-const IMAGE_TYPES = new Set(["cropped", "full", "small"]);
-
-export function parseImageType(raw: unknown): "cropped" | "full" | "small" {
-    const value = typeof raw === "string" ? raw : "full";
-    if (!IMAGE_TYPES.has(value)) {
-        throw new HttpError(400, "Query parameter 'type' must be cropped, full, or small");
-    }
-    return value as "cropped" | "full" | "small";
-}

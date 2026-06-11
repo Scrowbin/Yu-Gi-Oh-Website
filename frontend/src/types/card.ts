@@ -116,6 +116,14 @@ export type LinkArrows =
    Base card
    ========================= */
 
+export interface CardImages {
+    full?: string;
+    cropped?: string;
+    small?: string;
+}
+
+export type CardImageType = keyof CardImages;
+
 export interface BaseCard {
     id: string;
     name: string;
@@ -123,6 +131,7 @@ export interface BaseCard {
     status: CardStatus;
     cardFrame: CardFrame;
     cardType: CardType;
+    images: CardImages;
     cardCategory?: CardCategory[]; //e.g. floodgate, handtrap, non-engine,... similar to above
     rarity: Rarity
 }

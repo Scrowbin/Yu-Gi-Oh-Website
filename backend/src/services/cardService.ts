@@ -1,4 +1,5 @@
 import prisma from "../db/prisma.js";
+import { cardNameSearchTerms } from "../lib/htmlEntities.js";
 import { toApiCard, toApiCards } from "../mappers/cardMapper.js";
 import type { ApiCard } from "../types/card.js";
 
@@ -29,9 +30,12 @@ export async function searchCardsByName(
     name: string,
     limit = 20,
 ): Promise<ApiCard[]> {
+    const terms = cardNameSearchTerms(name);
     const cards = await prisma.card.findMany({
         where: {
-            name: { contains: name, mode: "insensitive" },
+            OR: terms.map((term) => ({
+                name: { contains: term, mode: "insensitive" as const },
+            })),
         },
         include: cardInclude,
         take: limit,

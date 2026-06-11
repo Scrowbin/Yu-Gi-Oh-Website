@@ -3,6 +3,7 @@ import type {
     ApiCard,
     CardCategory,
     CardFrame,
+    CardImages,
     CardStatus,
     MonsterCardType,
     Rarity,
@@ -100,6 +101,14 @@ function mapStat(value: string | null): number | "?" | undefined {
     return Number.isNaN(n) ? "?" : n;
 }
 
+function mapImages(card: DbCard): CardImages {
+    return {
+        ...(card.imageFull ? { full: card.imageFull } : {}),
+        ...(card.imageCropped ? { cropped: card.imageCropped } : {}),
+        ...(card.imageSmall ? { small: card.imageSmall } : {}),
+    };
+}
+
 export function toApiCard(
     card: DbCardWithRelations,
     ctx: CardMapperContext = {},
@@ -111,6 +120,7 @@ export function toApiCard(
         cardFrame: mapFrame(card.cardFrame),
         cardType: card.cardType as ApiCard["cardType"],
         status: ctx.status ?? "unlimited",
+        images: mapImages(card),
     };
 
     const categories = mapCategories(card.categories);
