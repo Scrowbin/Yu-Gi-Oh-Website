@@ -109,18 +109,27 @@ model MasterDuelCard {
 }
 
 model Deck {
-  id     Int        @id @default(autoincrement())
-  userId Int
-  cards  DeckCard[]
+  id         Int        @id @default(autoincrement())
+  mdmId      String?    @unique // Master Duel Meta _id
+  sourceUrl  String?    @unique // MDM deck path, e.g. /master-v/may-2026/mikanko/jamcow/DiN0C/
+  created    DateTime   @db.Date
+  deckType   String?    // archetype / deck category from MDM
+  rankedType String?    // e.g. Master V
+  engines    String[]
+  userId     Int?
+  cards      DeckCard[]
 }
 
 model DeckCard {
-  id     Int  @id @default(autoincrement())
+  id     Int    @id @default(autoincrement())
   deckId Int
   cardId Int
+  zone   String // main | extra | side
+  amount Int    @default(1)
 
-  deck Deck @relation(fields: [deckId], references: [id])
+  deck Deck @relation(fields: [deckId], references: [id], onDelete: Cascade)
   card Card @relation(fields: [cardId], references: [id])
 
-  @@unique([deckId, cardId])
+  @@unique([deckId, cardId, zone])
+  @@index([cardId])
 }

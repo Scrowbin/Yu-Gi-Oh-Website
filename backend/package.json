@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
     "import:cards": "tsx scripts/import-cards.ts",
+    "import:decks": "tsx scripts/import-decks.ts",
     "postinstall": "prisma generate"
   },
   "keywords": [],
